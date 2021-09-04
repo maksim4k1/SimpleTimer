@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 function Timer () {
   const [time, setTime] = useState(0);
   const [isPause, setPause] = useState(false);
+  const [isReset, setReset] = useState(false);
 
   function pauseHandler(){
     if(isPause === true){
@@ -13,17 +14,24 @@ function Timer () {
   }
 
   function resetTimer(){
-    setTime(0);
+    setReset(true);
   }
 
   useEffect(() => {
-    if(isPause === false){
-      const interval = setInterval(() => {
+    const interval = setInterval(() => {
+      if(isPause === false && isReset === false){
         setTime(time + 0.1);
-        clearInterval(interval);
-      }, 100);
-    }
-  }, [isPause, time])
+      } else if(isPause === false && isReset === true){
+        setTime(0);
+        setReset(false);
+        setPause(true);
+      } else if(isPause === true && isReset === true){
+        setTime(0);
+        setReset(false);
+      }
+      clearInterval(interval);
+    }, 100);
+  }, [isPause, time, isReset])
 
   return(
     <div className="content">
